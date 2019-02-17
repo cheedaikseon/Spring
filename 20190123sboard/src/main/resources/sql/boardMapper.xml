@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.koreate.sboard.dao.BoardDao">
+	
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">
+				 WHERE title like CONCAT('%',#{keyword},'%') 
+			</if>
+			<if test="searchType == 'c'.toString()">
+				 WHERE content like CONCAT('%',#{keyword},'%') 
+			</if>
+			<if test="searchType == 'w'.toString()">
+				 WHERE writer like CONCAT('%',#{keyword},'%') 
+			</if>
+			<if test="searchType == 'tc'.toString()">
+				 WHERE content like CONCAT('%',#{keyword},'%')
+				 OR title like CONCAT('%',#{keyword},'%') 
+			</if>
+			<if test="searchType == 'cw'.toString()">
+				 WHERE content like CONCAT('%',#{keyword},'%')
+				 OR writer like CONCAT('%',#{keyword},'%') 
+			</if>
+			<if test="searchType == 'tcw'.toString()">
+				 WHERE content like CONCAT('%',#{keyword},'%')
+				 OR title like CONCAT('%',#{keyword},'%')
+				 OR writer like CONCAT('%',#{keyword},'%')
+			</if>
+		</if>
+	</sql>
+
+	<insert id="register">
+		INSERT INTO re_tbl_board(title,content,writer,uno)
+		VALUES (#{title},#{content},#{writer},#{uno})
+	</insert>
+	
+	<update id="updateOrigin">
+		UPDATE re_tbl_board SET origin = LAST_INSERT_ID() 
+		WHERE bno = LAST_INSERT_ID()
+	</update>
+	
+	<select id="listReplyCriteria" resultType="boardVo">
+		SELECT * FROM re_tbl_board 
+		<include refid="search"></include> 
+		ORDER BY origin DESC, seq ASC  	
+		limit #{pageStart} , #{perPageNum}
+	</select>
+	
+	<select id="listReplyCount" resultType="int">
+		SELECT count(*) FROM  
+		re_tbl_board
+		<include refid="search"></include>
+	</select>
+	
+	
+	<update id="updateCnt">
+		UPDATE re_tbl_board SET viewcnt = viewcnt + 1 
+		WHERE bno = #{bno}
+	</update>
+	
+	<select id="readReply" resultType="boardVo">
+		SELECT * FROM  
+		re_tbl_board 
+		WHERE bno = #{bno}
+	</select>
+	
+	<update id="updateReply">
+		UPDATE re_tbl_board SET seq = seq + 1 
+		WHERE origin = #{origin} AND seq > #{seq}
+	</update>
+	
+	<insert id="replyRegister">
+		INSERT INTO re_tbl_board(title,content,writer,origin,depth,seq,uno)
+		VALUES(#{title},#{content},#{writer},#{origin},#{depth},#{seq},#{uno})
+	</insert>
+	<!-- VALUES(#{title},#{content},#{writer},#{origin},#{depth}+1,#{seq}+1) -->
+	
+	<update id="update">
+		UPDATE re_tbl_board SET title= #{title}, content= #{content}, writer =#{writer} , updatedate=now()
+		WHERE bno = #{bno}
+	</update>
+	
+	<update id="delete">
+		UPDATE re_tbl_board SET showboard ='n' 
+		WHERE bno= #{bno}
+	</update>
+	
+	<insert id="addAttach">
+		INSERT INTO tbl_attach(fullName,bno) 
+		VALUES(#{fullName},LAST_INSERT_ID())
+	</insert>
+	
+	<select id="getAttach" resultType="string">
+		SELECT fullName FROM tbl_attach 
+		WHERE bno = #{bno} ORDER BY regdate desc;
+	</select>
+	
+	<delete id="deleteAttach">
+		DELETE FROM tbl_attach WHERE bno = #{bno}
+	</delete>
+	
+	<insert id="replaceAttach" parameterType="java.util.Map">
+		INSERT INTO tbl_attach(fullName,bno)
+		VALUES(#{fullName},#{bno})
+	</insert>
+
+</mapper>

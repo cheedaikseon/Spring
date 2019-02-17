@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.koreate.sboard.dao.UserDao">
+
+	<insert id="signUp">
+		INSERT INTO tbl_user(uid,upw,uname) 
+		VALUES(#{uid},#{upw},#{uname})
+	</insert>
+	
+	<select id="getUserByUID" resultType="userVo">
+		SELECT * FROM tbl_user 
+		WHERE uid = #{uid}
+	</select>
+	
+	<select id="signIn" resultType="userVo">
+		SELECT * FROM tbl_user
+		WHERE uid = #{uid} AND upw = #{upw}
+	</select>
+	
+	<update id="updatePoint">
+		UPDATE tbl_user SET upoint = upoint + #{upoint} 
+		WHERE uid = #{uid}
+	</update>
+	
+	<!-- ban ip 검색 -->
+	<select id="getBanIPVObyIP" resultType="net.koreate.sboard.vo.BanIPVO">
+		SELECT * FROM ban_ip 
+		WHERE ip = #{ip}
+	</select>
+	
+	<insert id="signInFail">
+		INSERT INTO ban_ip(ip) VALUES(#{ip})
+	</insert>
+	
+	<update id="updateBanIPCnt">
+		UPDATE ban_ip SET 
+		cnt = cnt+1, bandate = now() 
+		WHERE ip = #{ip}
+	</update>
+	
+	<delete id="removeBanIP">
+		DELETE FROM ban_ip WHERE ip = #{ip}
+	</delete>
+	
+</mapper>
+
+
+
+
+

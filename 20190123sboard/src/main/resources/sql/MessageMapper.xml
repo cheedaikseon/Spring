@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.koreate.sboard.dao.MessageDao">
+
+	<insert id="create">
+		INSERT INTO tbl_message(targetid,sender,message) 
+		VALUES(#{targetid},#{sender},#{message})
+	</insert>
+	
+	<update id="updateMessage">
+		UPDATE tbl_message SET opendate = now()
+		WHERE mno = #{mno}
+	</update>
+	
+	<select id="readMessage" resultType="mVo">
+		SELECT * FROM tbl_message WHERE mno = #{mno}
+	</select>
+	
+</mapper>
+
+
+
+
+

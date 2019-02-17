@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<beans:bean id="signUpInterceptor"
+		class="net.koreate.sboard.interceptor.SignUpInterceptor" />
+	<beans:bean id="loginInterceptor"
+		class="net.koreate.sboard.interceptor.LoginInterceptor" />
+	<beans:bean id="checkCookieInterceptor"
+		class="net.koreate.sboard.interceptor.CheckCookieInterceptor" />
+	<beans:bean id="checkRefererInterceptor"
+		class="net.koreate.sboard.interceptor.CheckRefererInterceptor" />
+	<beans:bean id="createTokenInterceptor"
+		class="net.koreate.sboard.interceptor.CreateTokenInterceptor" />
+	<beans:bean id="checkTokenInterceptor"
+		class="net.koreate.sboard.interceptor.CheckTokenInterceptor" />
+	<beans:bean id="authInterceptor"
+		class="net.koreate.sboard.interceptor.AuthInterceptor" />
+	<interceptors>
+		
+		<interceptor>
+			<mapping path="/sboard/*" />
+			<exclude-mapping path="/sboard/listReply"/>
+			<exclude-mapping path="/sboard/readPage"/>
+			<exclude-mapping path="/sboard/read"/>
+			<exclude-mapping path="/sboard/getAttach"/>
+			<beans:ref bean="authInterceptor" />
+		</interceptor>
+	</interceptors>
+	
+	<interceptors>
+		<interceptor>	
+			<mapping path="/sboard/remove" />
+			<beans:ref bean="checkTokenInterceptor" />
+		</interceptor>
+
+		<interceptor>
+			<mapping path="/sboard/read" />
+			<beans:ref bean="createTokenInterceptor" />
+		</interceptor>
+		<interceptor>
+			<mapping path="/**" />
+			<exclude-mapping path="/" />
+			<exclude-mapping path="/sboard/getAttach/*" />
+			<exclude-mapping path="/sboard/read" />
+			<exclude-mapping path="/sboard/readPage" />
+			<exclude-mapping path="/sboard/listReply" />
+			<beans:ref bean="checkRefererInterceptor" />
+		</interceptor>
+
+		<interceptor>
+			<mapping path="/**" />
+			<!-- <exclude-mapping path="/user/*"/> -->
+			<exclude-mapping path="/user/signIn" />
+			<exclude-mapping path="/user/signInPost" />
+			<exclude-mapping path="/user/signUp" />
+			<exclude-mapping path="/user/signUpPost" />
+			<exclude-mapping path="/user/signOut" />
+			<beans:ref bean="checkCookieInterceptor" />
+		</interceptor>
+
+		<interceptor>
+			<mapping path="/user/signInPost" />
+			<beans:ref bean="loginInterceptor" />
+		</interceptor>
+
+		<interceptor>
+			<mapping path="/user/signUpPost" />
+			<beans:ref bean="signUpInterceptor" />
+		</interceptor>
+	</interceptors>
+
+</beans:beans>
