@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+		
+	<bean id="loginFailHandle" 
+				class="net.koreate.security.CustomLoginFailHandler" />
+	<bean id="loginSuccessHandle" 
+				class="net.koreate.security.CustomLoginSuccessHandler" />
+	<bean id="logoutSuccessHandle" 
+				class="net.koreate.security.CustomLogoutSuccessHandler" />
+	<bean id="customUserService" 
+				class="net.koreate.security.CustomUserDetailsService" />
+	<bean id="bcryptEncoder" 
+	class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+				
+<!-- 	<security:http pattern="/board/readPage" security="none"/>
+	<security:http pattern="/board/readUpdate" security="none"/>
+	<security:http pattern="/board/listPage" security="none"/> -->
+		
+	<security:http use-expressions="true">
+		<security:form-login login-page="/user/login"
+		username-parameter="uid"
+		password-parameter="upw" 
+		authentication-success-handler-ref="loginSuccessHandle"
+		authentication-failure-handler-ref="loginFailHandle"/>
+		
+		<security:logout logout-url="/user/logout"
+			success-handler-ref="logoutSuccessHandle"
+			delete-cookies="remember-me,JSESSIONID"/>
+		
+<!-- 	
+		<security:intercept-url pattern="/board/readPage" access="permitAll"/>
+		<security:intercept-url pattern="/board/readUpdate" access="permitAll"/>
+		<security:intercept-url pattern="/board/listPage" access="permitAll"/>
+		<security:intercept-url pattern="/board/**"
+		 access="hasAnyRole('ROLE_USER','ROLE_MEMBERSHIP','ROLE_MASTER')"/> -->
+		 
+		<security:remember-me token-validity-seconds="604800"/>
+		 
+	</security:http>
+	
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="customUserService">
+			<security:password-encoder ref="bcryptEncoder"/>
+			<!-- <security:user-service>
+				<security:user name="admin" 
+							   password="{noop}admin" 
+							   authorities="ROLE_MASTER"/>				
+			</security:user-service> -->
+		</security:authentication-provider>
+	</security:authentication-manager>
+</beans>
