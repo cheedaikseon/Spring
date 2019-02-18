@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<!-- <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+		<property name="jdbcUrl" 
+		value="jdbc:mysql://localhost:3306/mydata?serverTimezone=Asia/Seoul"/> -->
+		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy" />
+		<property name="jdbcUrl" 
+		value="jdbc:log4jdbc:mysql://localhost:3306/mydata?serverTimezone=Asia/Seoul"/>
+		<property name="username" value="java"/>
+		<property name="password" value="java"/>
+		<!-- maximumPoolSize = 10 -->
+		<property name="maximumPoolSize" value="200" />
+		<!-- 기본 유지 커넥션 = 20  defalut = maximumPoolSize-->
+		<property name="minimumIdle" value="20"/>
+		<!-- 단위는 ms  default 250 ms-->
+		<property name="connectionTimeout" value="30000"/>
+		<!-- 단위는 ms 최소값 100000ms default 600000ms -->
+		<property name="idleTimeout" value="200000"/>
+	</bean>
+	
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" 
+		destroy-method="close">
+		<constructor-arg ref="hikariConfig"/>
+	</bean>	
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+<!-- 	<bean id="dataSource" 
+			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+		<property name="url" 
+		value="jdbc:mysql://localhost:3306/mydata?serverTimezone=Asia/Seoul"/>
+		<property name="username" value="java"/>
+		<property name="password" value="java"/>
+	</bean> -->
+	
+	<bean id="sqlSessionFactory" 
+			class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:/mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml" />	
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+		
+</beans>
