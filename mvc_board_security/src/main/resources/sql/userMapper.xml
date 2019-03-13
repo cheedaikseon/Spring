@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.koreate.dao.UserDAO">
+	
+	<resultMap type="net.koreate.vo.UserVO" id="userMap">
+		<id property="uid" column="uid" />
+		<result property="uno" column="uno"/>
+		<result property="uid" column="uid"/>
+		<result property="upw" column="upw"/>
+		<result property="uname" column="uname"/>
+		<result property="regDate" column="regdate"/>
+		<result property="updateDate" column="updatedate"/>
+		<collection property="authList" resultMap="authMap">
+		</collection>		
+	</resultMap>
+	
+	<resultMap type="net.koreate.vo.AuthVO" id="authMap">
+		<result property="uid" column="uid"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+	
+	<select id="getUser" resultMap="userMap">
+		SELECT 
+			uno, m.uid, upw, uname, regdate, updatedate, auth 
+		FROM
+		security_member m LEFT OUTER JOIN security_member_auth a 
+		on m.uid = a.uid 
+		WHERE m.uid = #{uid}
+	</select>
+	
+	<insert id="join">
+		INSERT INTO security_member(uid,upw,uname)
+		VALUES(#{uid},#{upw},#{uname})
+	</insert>
+	
+	<insert id="insertAuth">
+		INSERT INTO security_member_auth(uid,auth)
+		VALUES(#{uid},'ROLE_USER')
+	</insert>
+</mapper>

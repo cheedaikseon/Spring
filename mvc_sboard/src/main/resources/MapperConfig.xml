@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration 
+	PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias alias="boardVo" type="net.koreate.sboard.vo.ReplyBoardVO"/>
+		<typeAlias alias="commentVo" type="net.koreate.sboard.vo.CommentVO"/>
+		<typeAlias alias="mVo" type="net.koreate.sboard.vo.MessageVO" />
+		<typeAlias alias="userVo" type="net.koreate.sboard.vo.UserVO"/>		
+	</typeAliases>
+</configuration>
+	

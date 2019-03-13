@@ -2,14 +2,25 @@ package net.koreate.vo;
 
 import java.util.Date;
 
-public class MemberVo {
-	private String userid;
-	private String userpw;
-	private String username;
-	private String email;
-	private Date regdate;
-	private Date updatedate;
+public class MemberVO {
 	
+	String userid;
+	String userpw;
+	String username;
+	String email;
+	Date regdate;
+	Date updatedate;
+	
+	public MemberVO() {}
+	
+	public MemberVO(String userid, String userpw, String username, String email) {
+		super();
+		this.userid = userid;
+		this.userpw = userpw;
+		this.username = username;
+		this.email = email;
+	}
+	// 이하  getter // setter // toString
 	public String getUserid() {
 		return userid;
 	}
@@ -48,8 +59,12 @@ public class MemberVo {
 	}
 	@Override
 	public String toString() {
-		return "MemberVo [userid=" + userid + ", userpw=" + userpw + ", username=" + username + ", email=" + email
+		return "MemberVO [userid=" + userid + ", userpw=" + userpw + ", username=" + username + ", email=" + email
 				+ ", regdate=" + regdate + ", updatedate=" + updatedate + "]";
 	}
 	
+	
+	
+	
+
 }

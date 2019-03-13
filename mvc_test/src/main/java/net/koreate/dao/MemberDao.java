@@ -1,8 +1,9 @@
 package net.koreate.dao;
 
-import net.koreate.vo.MemberVo;
+import net.koreate.vo.MemberVO;
 
-public interface MemberDao {
-
-	void insertMember(MemberVo vo) throws Exception;
+public interface MemberDAO {
+	
+	public void insertMember(MemberVO vo);
+	
 }
